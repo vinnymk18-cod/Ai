@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamFrame AI - Enterprise Cinematic AI Video Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================
+           1. STYLES.CSS: DESIGN SYSTEM & ANIMATIONS
+           ========================================== */
+        :root {
+            --bg-base: #03030d;
+            --bg-surface: rgba(10, 10, 26, 0.7);
+            --bg-card: rgba(20, 20, 45, 0.4);
+            --border-glow: rgba(99, 102, 241, 0.2);
+            --border-glow-active: rgba(6, 182, 212, 0.6);
+            
+            --primary: #6366f1; /* Indigo */
+            --secondary: #a855f7; /* Purple */
+            --accent: #06b6d4; /* Cyan */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Ambient Floating Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -10%; left: -10%; animation: floatOrb 25s infinite alternate; }
+        .orb-2 { width: 600px; height: 600px; background: var(--secondary); bottom: -10%; right: -10%; animation: floatOrb 30s infinite alternate-reverse; }
+        .orb-3 { width: 400px; height: 400px; background: var(--accent); top: 40%; left: 50%; animation: floatOrb 20s infinite linear; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 80px) scale(1.1); }
+            100% { transform: translate(-30px, -40px) scale(0.9); }
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: #1e1e38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Typography Styles */
+        h1, h2, h3, .brand-text { font-family: var(--font-mono); font-weight: 700; letter-spacing: -0.02em; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Interactive Elements */
+        .btn-neon {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            font-family: var(--font-sans);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+        .btn-neon:hover {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+            transform: scale(1.02);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--text-main);
+        }
+
+        /* Layout Framework */
+        .app-container { display: flex; min-height: 100vh; position: relative; }
+        
+        /* Master Header Navigation */
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 70px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; z-index: 1000; border-bottom: 1px solid var(--border-glow);
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 8px; display:flex; align-items:center; justify-content:center; }
+
+        /* Dynamic Pages View Wrapper */
+        .page { display: none; width: 100%; min-height: 100vh; padding-top: 70px; box-sizing: border-box; }
+        .page.active { display: block; animation: fadeIn 0.4s ease-out; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LANDING PAGE --- */
+        .hero-section {
+            max-width: 1200px; margin: 80px auto 40px auto; text-align: center; padding: 0 20px;
+        }
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 24px; }
+        .hero-subtitle { font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px auto; line-height: 1.6; }
+        .cta-group { display: flex; justify-content: center; gap: 16px; margin-bottom: 80px; }
+        
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;
+            max-width: 1200px; margin: 0 auto 80px auto; padding: 0 20px;
+        }
+        .feat-card { padding: 32px; text-align: left; }
+        .feat-icon { font-size: 2rem; color: var(--accent); margin-bottom: 16px; }
+
+        /* --- AUTH SYSTEM --- */
+        .auth-container { max-width: 450px; margin: 60px auto; padding: 40px; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+        .form-control {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glow);
+            padding: 14px; border-radius: 8px; color: white; font-family: var(--font-sans); font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+
+        /* --- DASHBOARD SYSTEM --- */
+        .dashboard-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 70px); }
+        .sidebar { border-right: 1px solid var(--border-glow); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+        .side-link {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px;
+            color: var(--text-muted); text-decoration: none; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .side-link:hover, .side-link.active { background: rgba(99, 102, 241, 0.15); color: white; }
+        
+        .workspace { padding: 40px; overflow-y: auto; }
+        .dash-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .metric-card { padding: 24px; position: relative; }
+        
+        /* --- STUDIO INPUT PANELS --- */
+        .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .control-panel { display: flex; flex-direction: column; gap: 24px; }
+        .preview-panel { display: flex; flex-direction: column; gap: 20px; min-height: 400px; justify-content: center; align-items: center; border: 2px dashed var(--border-glow); border-radius: 16px; padding: 20px; }
+        
+        .studio-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glow); padding: 8px 14px;
+            border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+        }
+        .chip.active { background: var(--primary); border-color: var(--primary); color: white; }
+        
+        /* Generated Asset Card */
+        .asset-card { position: relative; border-radius: 12px; overflow: hidden; background: #000; }
+        .asset-media { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 16/9; }
+        .asset-meta { padding: 16px; display: flex; justify-content: space-between; align-items: center; background: rgba(10,10,20,0.9); }
+
+        /* Loader & Skeletal Systems */
+        .loading-skeleton {
+            width: 100%; height: 200px; background: linear-gradient(90deg, #121232 25%, #1c1c44 50%, #121232 75%);
+            background-size: 200% 100%; animation: loadingShimmer 1.5s infinite; border-radius: 12px;
+        }
+        @keyframes loadingShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* Status Toast alerts */
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 16px 24px; border-radius: 8px; color: white; font-weight: 500; animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .toast.success { background: var(--success); border-left: 4px solid #047857; }
+        .toast.error { background: var(--danger); border-left: 4px solid #b91c1c; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .studio-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <nav class="top-nav glass-panel">
+        <div class="logo-area" onclick="Navigation.to('landing')">
+            <div class="logo-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <span class="brand-text gradient-text" style="font-size: 1.35rem;">DREAMFRAME AI</span>
+        </div>
+        <div class="nav-actions" id="globalNavActions">
+            </div>
+    </nav>
+
+    <div id="view-landing" class="page active">
+        <section class="hero-section">
+            <h1 class="hero-title"><span class="gradient-text">Create Cinematic AI Videos</span><br>from Simple Text Prompts</h1>
+            <p class="hero-subtitle">Enterprise-grade generative platform architecture fueled by next-generation diffusion systems. Orchestrate stunning visual assets, storyboards, and orchestrations on demand.</p>
+            <div class="cta-group">
+                <button class="btn-neon" onclick="Navigation.to('auth-login')">Generate Video <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-outline" onclick="App.watchDemo()">Watch Demo</button>
+            </div>
+        </section>
+
+        <div class="features-grid">
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-video feat-icon"></i>
+                <h3>AI Video Generation</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Render dynamic hyper-realistic cinematic files using Google Veo, Runway Gen-3, and Kling topologies.</p>
+            </div>
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-image feat-icon"></i>
+                <h3>AI Image Generation</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Synthesize 4K foundational conceptual artwork or production keyframes in microseconds.</p>
+            </div>
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-clapperboard feat-icon"></i>
+                <h3>AI Storyboard Creator</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Instantly break your operational narratives out into scene matrices containing complete camera descriptions.</p>
+            </div>
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-pen-nib feat-icon"></i>
+                <h3>AI Script Writer</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Architect dynamic content variants: short films, commercials, documentaries, and creative stories.</p>
+            </div>
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-microphone-lines feat-icon"></i>
+                <h3>AI Voice Narration</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Deploy life-like auditory vocal textures across multi-generational age matrices and timbres.</p>
+            </div>
+            <div class="glass-card feat-card">
+                <i class="fa-solid fa-music feat-icon"></i>
+                <h3>AI Music Prompting</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">Generate localized ambient backgrounds synced precisely to dynamic asset workflows.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-auth-login" class="page">
+        <div class="auth-container glass-panel">
+            <h2 style="margin-bottom: 12px; font-family: var(--font-mono);">Access Frame Studio</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Log in to authenticate engine transactions.</p>
+            <form onsubmit="Auth.handleLogin(event)">
+                <div class="form-group">
+                    <label>Enterprise Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="user@enterprise.ai" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-neon" style="width: 100%; justify-content: center; margin-top: 12px;">Authenticate Account</button>
+            </form>
+            <button class="btn-outline" onclick="Auth.handleGoogleSignIn()" style="width: 100%; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-brands fa-google"></i> Continue with Google
+            </button>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">
+                New operator? <span class="gradient-text" style="cursor: pointer; font-weight:600;" onclick="Navigation.to('auth-register')">Register Node</span> | 
+                <span style="cursor: pointer; text-decoration: underline;" onclick="Navigation.to('auth-forgot')">Reset Token</span>
+            </p>
+        </div>
+    </div>
+
+    <div id="view-auth-register" class="page">
+        <div class="auth-container glass-panel">
+            <h2 style="margin-bottom: 12px; font-family: var(--font-mono);">Register Account</h2>
+            <form onsubmit="Auth.handleRegister(event)">
+                <div class="form-group">
+                    <label>Full Operator Name</label>
+                    <input type="text" id="reg-name" class="form-control" placeholder="John Doe" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label>Enterprise Email</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="john@company.ai" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label>Secure Password</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn-neon" style="width: 100%; justify-content: center; margin-top: 12px;">Provision Workspace</button>
+            </form>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">
+                Existing Operator? <span class="gradient-text" style="cursor: pointer; font-weight:600;" onclick="Navigation.to('auth-login')">Login</span>
+            </p>
+        </div>
+    </div>
+
+    <div id="view-auth-forgot" class="page">
+        <div class="auth-container glass-panel">
+            <h2 style="margin-bottom: 12px; font-family: var(--font-mono);">Reset Token Matrix</h2>
+            <form onsubmit="Auth.handleForgotPassword(event)">
+                <div class="form-group">
+                    <label>Registered Email Address</label>
+                    <input type="email" id="forgot-email" class="form-control" placeholder="operator@domain.ai" required autocomplete="email">
+                </div>
+                <button type="submit" class="btn-neon" style="width: 100%; justify-content: center; margin-top: 12px;">Transmit Reset Vector</button>
+            </form>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">
+                Return to <span class="gradient-text" style="cursor: pointer; font-weight:600;" onclick="Navigation.to('auth-login')">Login Link</span>
+            </p>
+        </div>
+    </div>
+
+    <div id="view-dashboard" class="page">
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="side-link" id="link-dash-home" onclick="Dashboard.switchPanel('home')"><i class="fa-solid fa-chart-pie"></i> Metrics Grid</div>
+                <div class="side-link" id="link-dash-video" onclick="Dashboard.switchPanel('video')"><i class="fa-solid fa-video"></i> Video Studio</div>
+                <div class="side-link" id="link-dash-image" onclick="Dashboard.switchPanel('image')"><i class="fa-solid fa-image"></i> Image Engine</div>
+                <div class="side-link" id="link-dash-script" onclick="Dashboard.switchPanel('script')"><i class="fa-solid fa-pen-nib"></i> Script Forge</div>
+                <div class="side-link" id="link-dash-story" onclick="Dashboard.switchPanel('story')"><i class="fa-solid fa-clapperboard"></i> Storyboard Map</div>
+                <div class="side-link" id="link-dash-library" onclick="Dashboard.switchPanel('library')"><i class="fa-solid fa-folder-tree"></i> Asset Vault</div>
+                <div class="side-link" id="link-dash-admin" onclick="Dashboard.switchPanel('admin')" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; color: #f43f5e;"><i class="fa-solid fa-shield-halved"></i> Admin Control</div>
+            </aside>
+
+            <main class="workspace">
+                <div id="panel-dash-home" class="dash-panel" style="display: none;">
+                    <h2 style="margin-bottom: 8px;">Welcome Back, <span id="dash-user-name" class="gradient-text">Operator</span></h2>
+                    <p style="color: var(--text-muted); margin-bottom: 32px;">Real-time resource allocation and cluster processing nodes.</p>
+                    
+                    <div class="dash-metrics">
+                        <div class="glass-panel metric-card">
+                            <span style="color: var(--text-muted); font-size:0.85rem; font-weight:600; text-transform:uppercase;">Compute Balance</span>
+                            <h2 style="font-size: 2.2rem; margin-top:8px;" id="metric-credits">840 / 1000</h2>
+                            <p style="font-size:0.8rem; color:var(--accent); margin-top:4px;">Credits Active (Enterprise Plan)</p>
+                        </div>
+                        <div class="glass-panel metric-card">
+                            <span style="color: var(--text-muted); font-size:0.85rem; font-weight:600; text-transform:uppercase;">Storage Matrix</span>
+                            <h2 style="font-size: 2.2rem; margin-top:8px;">42.8 <span style="font-size:1.2rem;">GB</span></h2>
+                            <p style="font-size:0.8rem; color:var(--secondary); margin-top:4px;">Of 500 GB Provisioned</p>
+                        </div>
+                        <div class="glass-panel metric-card">
+                            <span style="color: var(--text-muted); font-size:0.85rem; font-weight:600; text-transform:uppercase;">Active Vectors</span>
+                            <h2 style="font-size: 2.2rem; margin-top:8px;" id="metric-projects">14</h2>
+                            <p style="font-size:0.8rem; color:var(--success); margin-top:4px;">Live Compiled Repositories</p>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 16px; font-family: var(--font-mono)">Recent Projects</h3>
+                    <div class="features-grid" style="padding:0; margin:0;" id="recentProjectsContainer">
+                        </div>
+                </div>
+
+                <div id="panel-dash-video" class="dash-panel" style="display: none;">
+                    <h2 style="margin-bottom: 24px; font-family: var(--font-mono)">AI Video Generation Studio</h2>
+                    <div class="studio-grid">
+                        <div class="control-panel">
+                            <div class="form-group">
+                                <label>Core Dynamic Video Prompt</label>
+                                <textarea id="vid-prompt" class="form-control" rows="4" placeholder="Cinematic drone sweep across a highly detailed futuristic skyline neon arrays, volumetric dust particles, 8k resolution..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Negative Prompt Matrix</label>
+                                <textarea id="vid-neg-prompt" class="form-control" rows="2" placeholder="blurry, low quality, distorted frame rates, artifacts, glitchy text"></textarea>
+                            </div>
+                            <div class="studio-row">
+                                <div class="form-group">
+                                    <label>AI Video Core Provider Model</label>
+                                    <select id="vid-provider" class="form-control">
+                                        <option value="veo">Google Veo 2.0 (Ultra-Cinema)</option>
+                                        <option value="runway">Runway Gen-3 Alpha</option>
+                                        <option value="kling">Kling AI (High-Fidelity Diffusion)</option>
+                                        <option value="luma">Luma Dream Machine</option>
+                                        <option value="pika">Pika 2.0 (Stylized Pro)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Visual Style</label>
+                                    <select id="vid-style" class="form-control">
+                                        <option value="Cinematic">Cinematic Masterpiece</option>
+                                        <option value="Realistic">Photorealistic Reality Engine</option>
+                                        <option value="Anime">Cyberpunk Anime Grid</option>
+                                        <option value="Sci-Fi">High-Sci Space Operatic</option>
+                                        <option value="Fantasy">Mystical Ethereal Fantasy</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="studio-row">
+                                <div class="form-group">
+                                    <label>Camera Vector Control</label>
+                                    <select id="vid-camera" class="form-control">
+                                        <option value="Drone">FPV High-Speed Drone Sweeps</option>
+                                        <option value="Dolly">Smooth Lateral Dolly Tracking</option>
+                                        <option value="Crane">Vertical Crane Elevator Shift</option>
+                                        <option value="Orbit">360-Degree Spherical Orbit</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Lighting Parameters</label>
+                                    <select id="vid-lighting" class="form-control">
+                                        <option value="Golden Hour">Golden Hour Natural Glow</option>
+                                        <option value="Neon">Cyber Neon High-Contrast Backlight</option>
+                                        <option value="Studio">Chiaroscuro Cinematic Studio</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="studio-row">
+                                <div class="form-group">
+                                    <label>Aspect Ratio</label>
+                                    <select id="vid-aspect" class="form-control">
+                                        <option value="16:9">16:9 Widescreen (Cinema)</option>
+                                        <option value="9:16">9:16 Vertical (Mobile Suite)</option>
+                                        <option value="1:1">1:1 Square Array</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Temporal Duration</label>
+                                    <select id="vid-duration" class="form-control">
+                                        <option value="5">5 Target Seconds (Fast Render)</option>
+                                        <option value="10">10 Standard Seconds</option>
+                                        <option value="30">30 Extended Narrative Seconds</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn-neon" onclick="VideoGenerator.triggerStream()" style="width:100%; justify-content:center; padding:16px;"><i class="fa-solid fa-bolt"></i> Compute Visual Matrix</button>
+                        </div>
+                        <div class="preview-panel glass-panel" id="videoPreviewPanel">
+                            <i class="fa-solid fa-play" style="font-size:3rem; color: var(--border-glow); margin-bottom:16px;"></i>
+                            <p style="color: var(--text-muted); text-align:center;">Configure execution vectors and click initialize to pipe backend generation rendering streams.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-dash-image" class="dash-panel" style="display: none;">
+                    <h2 style="margin-bottom: 24px; font-family: var(--font-mono)">AI Concept Image Engine</h2>
+                    <div style="display: flex; gap:16px; margin-bottom: 32px;">
+                        <input type="text" id="img-prompt" class="form-control" style="flex:1;" placeholder="Ultra-detailed digital painting of an Android dreaming, highly complex circuits...">
+                        <button class="btn-neon" onclick="ImageGenerator.triggerRender()"><i class="fa-solid fa-wand-magic-sparkles"></i> Render Image</button>
+                    </div>
+                    <div class="features-grid" style="padding:0; margin:0;" id="imageEngineContainer">
+                        </div>
+                </div>
+
+                <div id="panel-dash-script" class="dash-panel" style="display: none;">
+                    <h2 style="margin-bottom: 24px; font-family: var(--font-mono)">AI Script Forge Architecture</h2>
+                    <div class="studio-grid">
+                        <div class="control-panel">
+                            <div class="form-group">
+                                <label>Script Archetype Template</label>
+                                <select id="script-type" class="form-control">
+                                    <option value="Movie Script">Hollywood Cinematic Feature</option>
+                                    <option value="Love Story">Romantic Narrative Stream</option>
+                                    <option value="Commercial">High-Conversion Commercial Variant</option>
+                                    <option value="Documentary">Historical Deep-Dive Documentary</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Core Narrative Concept Prompt</label>
+                                <textarea id="script-prompt" class="form-control" rows="5" placeholder="An astronaut discovers a beacon buried inside a hyper-dense neutron star..."></textarea>
+                            </div>
+                            <button class="btn-neon" onclick="ScriptWriter.generate()"><i class="fa-solid fa-feather-pointed"></i> Run Semantic Forge</button>
+                        </div>
+                        <div class="glass-panel" style="padding: 24px; display:flex; flex-direction:column; gap:16px;">
+                            <div style="display: flex; justify-content:space-between; align-items:center;">
+                                <h4 style="font-family: var(--font-mono)">Compiled Output Payload</h4>
+                                <button class="btn-outline" style="padding:6px 12px; font-size:0.8rem;" onclick="ScriptWriter.exportPayload()"><i class="fa-solid fa-download"></i> Export Markdown</button>
+                            </div>
+                            <div id="script-output" class="form-control" style="flex:1; height:320px; overflow-y:auto; white-space:pre-wrap; font-family:var(--font-mono); font-size:0.9rem; background:rgba(0,0,0,0.3)">
+                                System idle. Awaiting operational instruction parameters...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-dash-story" class="dash-panel" style="display: none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                        <h2 style="font-family: var(--font-mono)">Active Storyboard Matrix</h2>
+                        <button class="btn-neon" onclick="Storyboard.compileMap()"><i class="fa-solid fa-puzzle-piece"></i> Auto-Segment Script Workspace</button>
+                    </div>
+                    <div style="display: flex; flex-direction:column; gap:20px;" id="storyboardTrackContainer">
+                        </div>
+                </div>
+
+                <div id="panel-dash-library" class="dash-panel" style="display: none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                        <h2 style="font-family: var(--font-mono)">Asset Vault</h2>
+                        <input type="text" id="vault-search" class="form-control" style="width: 300px;" placeholder="Search index parameters..." oninput="Dashboard.filterLibrary()">
+                    </div>
+                    <div class="features-grid" style="padding:0; margin:0;" id="libraryVaultContainer">
+                        </div>
+                </div>
+
+                <div id="panel-dash-admin" class="dash-panel" style="display: none;">
+                    <h2 style="margin-bottom: 8px; color: #f43f5e; font-family:var(--font-mono);"><i class="fa-solid fa-user-shield"></i> Root Executive Administration Panel</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 32px;">System-wide diagnostic visualization telemetry, user permissions, compute pool modifications.</p>
+                    
+                    <div class="dash-metrics" style="margin-bottom:32px;">
+                        <div class="glass-panel" style="padding:20px; border-color: rgba(244,63,94,0.3)">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">TOTAL SYSTEM OPERATORS</div>
+                            <h3 style="font-size:1.8rem; margin-top:4px;">1,402 Nodes</h3>
+                        </div>
+                        <div class="glass-panel" style="padding:20px; border-color: rgba(244,63,94,0.3)">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">TOTAL COMPUTE PIPES RUNNING</div>
+                            <h3 style="font-size:1.8rem; margin-top:4px;">89.4k Jobs</h3>
+                        </div>
+                        <div class="glass-panel" style="padding:20px; border-color: rgba(244,63,94,0.3)">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">FAILURE VECTOR RATE</div>
+                            <h3 style="font-size:1.8rem; margin-top:4px; color:var(--success)">0.024%</h3>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel" style="padding:24px;">
+                        <h3 style="margin-bottom:16px; font-family:var(--font-mono);">Live Operator Nodes System Registry</h3>
+                        <table style="width:100%; border-collapse: collapse; text-align:left; font-size:0.9rem;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-glow); color:var(--text-muted);">
+                                    <th style="padding:12px;">Identity Anchor</th>
+                                    <th style="padding:12px;">Role Vector</th>
+                                    <th style="padding:12px;">Compute Balance</th>
+                                    <th style="padding:12px;">Actions Matrix</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUserTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+    <script>
+        /* Global State Machine Container */
+        const GlobalState = {
+            user: null,
+            credits: 840,
+            projects: [
+                { id: "p-101", title: "Neon Genesis Horizon", type: "Video", date: "2026-07-01", url: "https://assets.mixkit.co/videos/preview/mixkit-futuristic-subway-station-with-neon-lights-44122-large.mp4", style: "Cinematic", prompt: "Cyberpunk subway platform sweep" },
+                { id: "p-102", title: "Astronaut Deep Space", type: "Image", date: "2026-07-03", url: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=600&q=80", style: "Realistic", prompt: "Astronaut floating near star dust grid" }
+            ],
+            scripts: [],
+            storyboards: []
+        };
+
+        /* Toast UI Alert Dispatch Engine */
+        const Toast = {
+            show(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const element = document.createElement('div');
+                element.className = `toast ${type}`;
+                const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+                element.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+                container.appendChild(element);
+                setTimeout(() => { element.style.opacity = '0'; setTimeout(() => element.remove(), 300); }, 4000);
+            }
+        };
+
+        /* NAVIGATION SUB-SYSTEM */
+        const Navigation = {
+            to(viewId) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                const targetPage = document.getElementById(`view-${viewId}`);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                this.updateGlobalHeader();
+            },
+            updateGlobalHeader() {
+                const actionsDiv = document.getElementById('globalNavActions');
+                if (GlobalState.user) {
+                    actionsDiv.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:20px;">
+                            <div style="text-align:right; display:none; display:sm-block;">
+                                <div style="font-size:0.85rem; font-weight:700;">${GlobalState.user.name}</div>
+                                <div style="font-size:0.75rem; color:var(--accent); font-family:var(--font-mono);">${GlobalState.credits} CR</div>
+                            </div>
+                            <button class="btn-neon" style="padding:8px 16px; font-size:0.9rem;" onclick="Navigation.to('dashboard'); Dashboard.switchPanel('home')">Studio Panel</button>
+                            <button class="btn-outline" style="padding:8px 16px; font-size:0.9rem; border-color:#ef4444; color:#ef4444;" onclick="Auth.logout()">Disconnect</button>
+                        </div>
+                    `;
+                } else {
+                    actionsDiv.innerHTML = `
+                        <button class="btn-outline" style="padding:8px 20px; font-size:0.9rem; margin-right:12px;" onclick="Navigation.to('auth-login')">Access Engine</button>
+                        <button class="btn-neon" style="padding:8px 20px; font-size:0.9rem;" onclick="Navigation.to('auth-register')">Deploy Node</button>
+                    `;
+                }
+            }
+        };
+
+        /* AUTHENTICATION SUB-SYSTEM */
+        const Auth = {
+            handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                GlobalState.user = { name: email.split('@')[0].toUpperCase(), email: email, role: 'Admin' };
+                Toast.show("Secure token authenticated. Workspace established.");
+                Navigation.to('dashboard');
+                Dashboard.switchPanel('home');
+            },
+            handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('reg-name').value;
+                const email = document.getElementById('reg-email').value;
+                GlobalState.user = { name: name, email: email, role: 'Admin' };
+                Toast.show("Cloud Identity profile provisions successfully generated.");
+                Navigation.to('dashboard');
+                Dashboard.switchPanel('home');
+            },
+            handleGoogleSignIn() {
+                GlobalState.user = { name: "GOOGLE USER SECURE", email: "auth-oauth@google.com", role: 'Admin' };
+                Toast.show("Federated Identity Provider loop validation success.");
+                Navigation.to('dashboard');
+                Dashboard.switchPanel('home');
+            },
+            handleForgotPassword(e) {
+                e.preventDefault();
+                Toast.show("Cryptographic reset instruction payload beamed to mx record.", "success");
+                Navigation.to('auth-login');
+            },
+            logout() {
+                GlobalState.user = null;
+                Toast.show("Node connection fully severed.", "error");
+                Navigation.to('landing');
+            }
+        };
+
+        /* DASHBOARD GRID SYSTEMS MAPPED LOGIC */
+        const Dashboard = {
+            switchPanel(panelId) {
+                document.querySelectorAll('.dash-panel').forEach(p => p.style.display = 'none');
+                document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+                
+                document.getElementById(`panel-dash-${panelId}`).style.display = 'block';
+                const dynamicLink = document.getElementById(`link-dash-${panelId}`);
+                if (dynamicLink) dynamicLink.classList.add('active');
+                
+                if (panelId === 'home') this.renderHomeMetrics();
+                if (panelId === 'library') this.renderLibraryVault();
+                if (panelId === 'admin') Admin.renderSystemGrid();
+            },
+            renderHomeMetrics() {
+                document.getElementById('dash-user-name').innerText = GlobalState.user ? GlobalState.user.name : "Operator";
+                document.getElementById('metric-credits').innerText = `${GlobalState.credits} / 1000`;
+                document.getElementById('metric-projects').innerText = GlobalState.projects.length;
+                
+                const container = document.getElementById('recentProjectsContainer');
+                container.innerHTML = GlobalState.projects.slice(0, 3).map(p => `
+                    <div class="glass-card asset-card">
+                        ${p.type === 'Video' ? `<video class="asset-media" src="${p.url}" autoplay loop muted></video>` : `<img class="asset-media" src="${p.url}" alt="Project preview">`}
+                        <div class="asset-meta">
+                            <div>
+                                <h4 style="font-size:0.95rem;">${p.title}</h4>
+                                <span style="font-size:0.75rem; color:var(--accent);">${p.type} | ${p.style}</span>
+                            </div>
+                            <button class="btn-outline" style="padding:6px; font-size:0.8rem;" onclick="Dashboard.deleteItem('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            renderLibraryVault() {
+                const container = document.getElementById('libraryVaultContainer');
+                if (GlobalState.projects.length === 0) {
+                    container.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1; text-align:center;">Asset matrix empty.</p>`;
+                    return;
+                }
+                container.innerHTML = GlobalState.projects.map(p => `
+                    <div class="glass-card asset-card">
+                        ${p.type === 'Video' ? `<video class="asset-media" src="${p.url}" controls muted></video>` : `<img class="asset-media" src="${p.url}" alt="Vault matrix graphic">`}
+                        <div class="asset-meta">
+                            <div>
+                                <h4 style="font-size:0.95rem; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; max-width:160px;">${p.title}</h4>
+                                <p style="font-size:0.7rem; color:var(--text-muted); text-overflow:ellipsis; white-space:nowrap; overflow:hidden; max-width:160px;">${p.prompt}</p>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <a href="${p.url}" target="_blank" download class="btn-outline" style="padding:6px; font-size:0.8rem;"><i class="fa-solid fa-download"></i></a>
+                                <button class="btn-outline" style="padding:6px; font-size:0.8rem; color:var(--danger);" onclick="Dashboard.deleteItem('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            filterLibrary() {
+                const val = document.getElementById('vault-search').value.toLowerCase();
+                const filtered = GlobalState.projects.filter(p => p.title.toLowerCase().includes(val) || p.prompt.toLowerCase().includes(val));
+                // Shortcut redraw mechanism inline mapping optimized standard
+                const container = document.getElementById('libraryVaultContainer');
+                container.innerHTML = filtered.map(p => `
+                    <div class="glass-card asset-card">
+                        ${p.type === 'Video' ? `<video class="asset-media" src="${p.url}" controls muted></video>` : `<img class="asset-media" src="${p.url}" alt="Asset graphic">`}
+                        <div class="asset-meta">
+                            <div><h4>${p.title}</h4></div>
+                            <button class="btn-outline" style="padding:6px;" onclick="Dashboard.deleteItem('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            deleteItem(id) {
+                GlobalState.projects = GlobalState.projects.filter(p => p.id !== id);
+                Toast.show("Asset matrix reference cleanly scrubbed.", "error");
+                this.renderHomeMetrics();
+                this.renderLibraryVault();
+            }
+        };
+
+        /* VIDEO GENERATION STUDIO SUB-SYSTEM */
+        const VideoGenerator = {
+            triggerStream() {
+                const prompt = document.getElementById('vid-prompt').value;
+                if (!prompt) { return Toast.show("Input validation failed: Text matrix prompt required.", "error"); }
+                if (GlobalState.credits < 50) { return Toast.show("Resource exhausted: Infused runtime compute units required.", "error"); }
+                
+                const panel = document.getElementById('videoPreviewPanel');
+                panel.innerHTML = `
+                    <div class="loading-skeleton"></div>
+                    <p style="margin-top:16px; font-family:var(--font-mono); color:var(--accent);" id="vid-status-stream">Initializing Core Network Allocation Queue...</p>
+                `;
+                
+                let stage = 0;
+                const statusArrays = [
+                    "Routing Layer Vectors to Secure Cloud Function Endpoint...",
+                    "Invoking Provider Micro-Engine Cluster...",
+                    "Diffusion Processing Pipeline Node Synchronized (85%)...",
+                    "Finalizing Matrix Array Compression..."
+                ];
+                
+                const interval = setInterval(() => {
+                    if (stage < statusArrays.length) {
+                        const statusText = document.getElementById('vid-status-stream');
+                        if (statusText) statusText.innerText = statusArrays[stage];
+                        stage++;
+                    } else {
+                        clearInterval(interval);
+                        GlobalState.credits -= 50;
+                        const newVid = {
+                            id: "p-" + Date.now(),
+                            title: prompt.substring(0, 18) + "...",
+                            type: "Video",
+                            date: "2026-07-05",
+                            url: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-42304-large.mp4",
+                            style: document.getElementById('vid-style').value,
+                            prompt: prompt
+                        };
+                        GlobalState.projects.unshift(newVid);
+                        panel.innerHTML = `
+                            <video src="${newVid.url}" class="asset-media" autoplay loop controls style="border-radius:12px; width:100%;"></video>
+                            <div style="width:100%; text-align:left; font-size:0.85rem; color:var(--text-muted); margin-top:8px;">
+                                <strong>Status:</strong> Handshake Verified Safe. 50 Credits deducted securely.
+                            </div>
+                        `;
+                        Toast.show("Cinematic Stream Transpiled & Archived.");
+                    }
+                }, 1500);
+            }
+        };
+
+        /* IMAGE GENERATION SUB-SYSTEM */
+        const ImageGenerator = {
+            triggerRender() {
+                const prompt = document.getElementById('img-prompt').value;
+                if (!prompt) return Toast.show("Prompt input missing", "error");
+                
+                const container = document.getElementById('imageEngineContainer');
+                const loader = document.createElement('div');
+                loader.className = 'loading-skeleton';
+                container.prepend(loader);
+                
+                setTimeout(() => {
+                    loader.remove();
+                    const newImg = {
+                        id: "p-" + Date.now(),
+                        title: prompt.substring(0,15),
+                        type: "Image",
+                        date: "2026-07-05",
+                        url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                        style: "Abstract Modernism",
+                        prompt: prompt
+                    };
+                    GlobalState.projects.unshift(newImg);
+                    Dashboard.switchPanel('image');
+                    
+                    container.innerHTML = `
+                        <div class="glass-card asset-card">
+                            <img class="asset-media" src="${newImg.url}">
+                            <div class="asset-meta">
+                                <h4 style="font-size:0.85rem;">${newImg.title}</h4>
+                                <button class="btn-outline" style="padding:4px 8px;" onclick="Dashboard.deleteItem('${newImg.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    ` + container.innerHTML;
+                    Toast.show("Foundational conceptual matrix compiled.");
+                }, 2000);
+            }
+        };
+
+        /* SCRIPT FORGE WRITER SUB-SYSTEM */
+        const ScriptWriter = {
+            generate() {
+                const prompt = document.getElementById('script-prompt').value;
+                if(!prompt) return Toast.show("Narrative baseline parameters absent.", "error");
+                
+                const out = document.getElementById('script-output');
+                out.innerText = "Querying foundational large language transformers via API routing backend proxy layer...";
+                
+                setTimeout(() => {
+                    out.innerText = `[SCENE 1 - MATRIX INITIALIZATION]\nMETADATA: ARCHETYPE: ${document.getElementById('script-type').value}\n\nINT. RUNTIME CORE - INFINITE TIMELINE\n\nVariables float like crystalline stardust across structural codebases. The Camera pans gracefully across glowing fields of automated microservices.\n\nNARRATOR (V.O.)\nIn the era of DreamFrame AI, creation parameters bypass legacy physical constraints completely.\n\nEXT. HORIZON LINE - CONTINUOUS\n\nA blinding neon sunrise snaps across the horizon layer. Deep ocean waves shimmer with intense cyan sub-pixels.`;
+                    Toast.show("Script structure calculated successfully.");
+                }, 1800);
+            },
+            exportPayload() {
+                Toast.show("Markdown byte stream encoded and downloaded.");
+            }
+        };
+
+        /* STORYBOARD MAP MULTI-SCENE GENERATOR */
+        const Storyboard = {
+            compileMap() {
+                const container = document.getElementById('storyboardTrackContainer');
+                container.innerHTML = `
+                    <div class="glass-panel" style="padding:24px;">
+                        <h4 style="color:var(--accent); margin-bottom:12px; font-family:var(--font-mono)">SCENE BLOCK 001 - INTRODUCTION MATRIX</h4>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; font-size:0.85rem;">
+                            <div><strong>Camera Vector:</strong> FPV Low-angle Glide</div>
+                            <div><strong>Lighting Paradigm:</strong> High Contrast Neon Radiance</div>
+                            <div><strong>Mood Metric:</strong> Intense / Suspenseful</div>
+                            <div><strong>Dynamic Frame Prompt:</strong> Cinematic macro capture of central core arrays pulsing blue light matrix channels.</div>
+                        </div>
+                    </div>
+                    <div class="glass-panel" style="padding:24px;">
+                        <h4 style="color:var(--secondary); margin-bottom:12px; font-family:var(--font-mono)">SCENE BLOCK 002 - THE CLIMAX PHENOMENON</h4>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; font-size:0.85rem;">
+                            <div><strong>Camera Vector:</strong> 360 Wide Spherical Orbit</div>
+                            <div><strong>Lighting Paradigm:</strong> Blinding White Volumetric Sunrays</div>
+                            <div><strong>Mood Metric:</strong> Epic / Orchestral</div>
+                            <div><strong>Dynamic Frame Prompt:</strong> Aerial wide-shot tracking structural monolith configurations ascending cleanly through geometric cloud covers.</div>
+                        </div>
+                    </div>
+                `;
+                Toast.show("Dynamic Script mapping parsed across scene blocks cleanly.");
+            }
+        };
+
+        /* ADMINISTRATIVE ROLE ACCESS TELEMETRY CONTROL PANEL */
+        const Admin = {
+            renderSystemGrid() {
+                const body = document.getElementById('adminUserTableBody');
+                const dummyOperators = [
+                    { id: "node-901", email: "alpha-corp@secure.io", role: "Enterprise Admin", usage: "450 / 1000 CR" },
+                    { id: "node-402", email: "creative-flow@pixel.ai", role: "Standard Tier", usage: "12 / 200 CR" },
+                    { id: "node-119", email: "rogue-packet@anomaly.net", role: "Suspended Flag", usage: "0 / 0 CR" }
+                ];
+                body.innerHTML = dummyOperators.map(op => `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:14px; font-family:var(--font-mono);">${op.email}</td>
+                        <td style="padding:14px;"><span class="chip active" style="padding:4px 8px; font-size:0.75rem;">${op.role}</span></td>
+                        <td style="padding:14px; font-family:var(--font-mono);">${op.usage}</td>
+                        <td style="padding:14px;">
+                            <button class="btn-outline" style="padding:4px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);" onclick="Admin.purgeNode('${op.id}')">Scrub Access</button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+            purgeNode(nodeId) {
+                Toast.show(`Revocation protocol processed down to node tracking anchor: ${nodeId}`, "error");
+            }
+        };
+
+        /* CORE APPLICATION BOOTSTRAPPING ENGINE */
+        const App = {
+            init() {
+                console.log("DreamFrame AI Core Enterprise Platform Initialized [System Year: 2026].");
+                Navigation.updateGlobalHeader();
+                // Set default chip selection logic listener framework binding
+                document.querySelectorAll('.chip').forEach(chip => {
+                    chip.addEventListener('click', function() {
+                        this.parentNode.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            },
+            watchDemo() {
+                Toast.show("Streaming secure pipeline overview presentation layer (1080p stream matrix active).");
+            }
+        };
+
+        // Fire initialization sequence on document loading state confirmation
+        document.addEventListener("DOMContentLoaded", App.init);
+    </script>
+
+    </body>
+</html>
